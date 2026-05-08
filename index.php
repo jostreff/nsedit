@@ -316,19 +316,24 @@ function displayExportIcon(zone) {
 
 function displayContent(fieldName, zone) {
     return function(data) {
-        if (typeof(zone) != 'undefined') {
-            var rexp = new RegExp("(.*)"+zone);
-            var label = rexp.exec(data.record[fieldName]);
-            var lspan = $('<span>').text(label[1]);
-            var zspan = $('<span class="lightgrey">').text(zone);
-            return lspan.add(zspan);
-        } else {
-            var text = data.record[fieldName];
-            if (typeof data.record[fieldName] == 'boolean') {
-                text == false ? text = 'No' : text = 'Yes';
-            }
-            return $('<span>').text(text);
+        var text = data.record[fieldName];
+        
+        if (typeof text == 'boolean') {
+            return $('<span>').text(text ? 'Yes' : 'No');
         }
+
+        if (typeof zone !== 'undefined' && zone !== null && text) {
+            var rexp = new RegExp("(.*)" + zone);
+            var label = rexp.exec(text);
+            
+            if (label && label[1] !== undefined) {
+                var lspan = $('<span>').text(label[1]);
+                var zspan = $('<span class="lightgrey">').text(zone);
+                return lspan.add(zspan);
+            }
+        }
+
+        return $('<span>').text(text || '');
     }
 }
 
